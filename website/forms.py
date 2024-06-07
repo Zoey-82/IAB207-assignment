@@ -24,5 +24,9 @@ class RegisterForm(FlaskForm):
     class TicketForm(FlaskForm):
     quantity = IntegerField('Quantity', validators=[InputRequired(), NumberRange(min=1)])
     submit = SubmitField('Book Tickets')
-    
 
+#comment form
+class CommentForm(FlaskForm):
+    content = TextAreaField('Comment', validators=[InputRequired()])
+    submit = SubmitField('Post Comment')
+    
