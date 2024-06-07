@@ -21,7 +21,7 @@ class RegisterForm(FlaskForm):
     submit = SubmitField("Register")
     
     # ticket form 
-    class TicketForm(FlaskForm):
+class TicketForm(FlaskForm):
     quantity = IntegerField('Quantity', validators=[InputRequired(), NumberRange(min=1)])
     submit = SubmitField('Book Tickets')
 
