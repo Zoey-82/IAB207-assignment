@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Booking History</h2>
+<ul>
+    {% for booking in current_user.bookings %}
+    <li>Event: {{ booking.event.title }}, Quantity: {{ booking.quantity }}, Date: {{ booking.order_date }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
