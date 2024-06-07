@@ -65,3 +65,9 @@ def event_detail(event_id):
         return redirect(url_for('auth.event_detail', event_id=event.id))
     comments = Comment.query.filter_by(event_id=event.id).all()
     return render_template('event_detail.html', event=event, form=form, comments=comments)
+
+@auth_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('auth.login'))
