@@ -99,3 +99,55 @@ def register():
 def index():
     events = Event.query.all()
     return render_template('index1.html', events=events)
+    
+# event creation
+@auth_bp.route('/create_event', methods=['GET', 'POST'])
+@login_required
+def create_event():
+    form = EventForm()
+    if form.validate_on_submit():
+        event = Event(
+            title=form.title.data,
+            description=form.description.data,
+            date=form.date.data,
+            owner_id=current_user.id,
+            status='Open'
+        )
+        db.session.add(event)
+        db.session.commit()
+        flash('Event created successfully!')
+        return redirect(url_for('auth.index'))
+    return render_template('create_event.html', form=form)
+
+$ event updating 
+@auth_bp.route('/update_event/<int:event_id>', methods=['GET', 'POST'])
+@login_required
+def update_event(event_id):
+    event = Event.query.get_or_404(event_id)
+    if event.owner_id != current_user.id:
+        flash('You are not authorized to update this event.')
+        return redirect(url_for('auth.index'))
+
+    form = EventForm(obj=event)
+    if form.validate_on_submit():
+        event.title = form.title.data
+        event.description = form.description.data
+        event.date = form.date.data
+        db.session.commit()
+        flash('Event updated successfully!')
+        return redirect(url_for('auth.index'))
+    return render_template('update_event.html', form=form, event=event)
+
+# event cancel
+@auth_bp.route('/cancel_event/<int:event_id>', methods=['POST'])
+@login_required
+def cancel_event(event_id):
+    event = Event.query.get_or_404(event_id)
+    if event.owner_id != current_user.id:
+        flash('You are not authorized to cancel this event.')
+        return redirect(url_for('auth.index'))
+
+    event.status = 'Cancelled'
+    db.session.commit()
+    flash('Event cancelled successfully!')
+    return redirect(url_for('auth.index'))
