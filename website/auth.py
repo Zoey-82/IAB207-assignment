@@ -33,6 +33,7 @@ def login():
             flash(error)
     return render_template('user.html', form=login_form, heading='Login')
 
+# event booking
 @auth_bp.route('/book_event/<int:event_id>', methods=['GET', 'POST'])
 @login_required
 def book_event(event_id):
@@ -47,12 +48,14 @@ def book_event(event_id):
         return redirect(url_for('index'))
     return render_template('book_event.html', event=event, form=form)
 
+# booking history 
 @auth_bp.route('/booking_history')
 @login_required
 def booking_history():
     orders = Order.query.filter_by(user_id=current_user.id).all()
     return render_template('booking_history.html', orders=orders)
 
+# event details 
 @auth_bp.route('/event/<int:event_id>', methods=['GET', 'POST'])
 def event_detail(event_id):
     event = Event.query.get_or_404(event_id)
@@ -66,12 +69,14 @@ def event_detail(event_id):
     comments = Comment.query.filter_by(event_id=event.id).all()
     return render_template('event_detail.html', event=event, form=form, comments=comments)
 
+# user logout 
 @auth_bp.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
 
+# user register 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
