@@ -52,3 +52,16 @@ def book_event(event_id):
 def booking_history():
     orders = Order.query.filter_by(user_id=current_user.id).all()
     return render_template('booking_history.html', orders=orders)
+
+@auth_bp.route('/event/<int:event_id>', methods=['GET', 'POST'])
+def event_detail(event_id):
+    event = Event.query.get_or_404(event_id)
+    form = CommentForm()
+    if form.validate_on_submit() and current_user.is_authenticated:
+        comment = Comment(user_id=current_user.id, event_id=event.id, content=form.content.data)
+        db.session.add(comment)
+        db.session.commit()
+        flash('Comment posted successfully!')
+        return redirect(url_for('auth.event_detail', event_id=event.id))
+    comments = Comment.query.filter_by(event_id=event.id).all()
+    return render_template('event_detail.html', event=event, form=form, comments=comments)
