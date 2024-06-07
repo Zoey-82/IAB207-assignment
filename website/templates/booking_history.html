@@ -2,8 +2,13 @@
 {% block content %}
 <h2>Booking History</h2>
 <ul>
-    {% for booking in current_user.bookings %}
-    <li>Event: {{ booking.event.title }}, Quantity: {{ booking.quantity }}, Date: {{ booking.order_date }}</li>
+    {% for order in orders %}
+    <li>
+        Event: {{ order.event.title }} <br>
+        Quantity: {{ order.quantity }} <br>
+        Order Date: {{ order.order_date }} <br>
+        Order ID: {{ order.id }}
+    </li>
     {% endfor %}
 </ul>
 {% endblock %}

@@ -6,15 +6,19 @@
 <p>Status: {{ event.status }}</p>
 {% if current_user.is_authenticated %}
 <h3>Book Tickets</h3>
-<form method="POST" action="{{ url_for('book_event', event_id=event.id) }}">
+<form method="POST" action="{{ url_for('main.book_event', event_id=event.id) }}">
+    {{ form.hidden_tag() }}
     <div class="form-group">
         <label for="quantity">Quantity</label>
         <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
     </div>
     <button type="submit" class="btn btn-primary">Book</button>
 </form>
+{% endif %}
+
 <h3>Comments</h3>
-<form method="POST" action="{{ url_for('comment', event_id=event.id) }}">
+{% if current_user.is_authenticated %}
+<form method="POST" action="{{ url_for('main.event_detail', event_id=event.id) }}">
     {{ form.hidden_tag() }}
     <div class="form-group">
         {{ form.content.label }}
@@ -23,11 +27,12 @@
     <button type="submit" class="btn btn-primary">Post Comment</button>
 </form>
 {% endif %}
-{% for comment in event.comments %}
+
+{% for comment in comments %}
 <div class="card mt-3">
     <div class="card-body">
         <p>{{ comment.content }}</p>
-        <footer class="blockquote-footer">{{ comment.commenter.first_name }} on {{ comment.date }}</footer>
+        <footer class="blockquote-footer">{{ comment.user.first_name }} on {{ comment.date }}</footer>
     </div>
 </div>
 {% endfor %}
