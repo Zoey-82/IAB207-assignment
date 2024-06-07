@@ -93,3 +93,9 @@ def register():
         flash('Your account has been created! You are now able to log in', 'success')
         return redirect(url_for('auth.login'))
     return render_template('register.html', form=form)
+
+# event status 
+@auth_bp.route('/')
+def index():
+    events = Event.query.all()
+    return render_template('index1.html', events=events)
