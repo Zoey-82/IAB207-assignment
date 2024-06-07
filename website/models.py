@@ -30,6 +30,9 @@ class Order(db.Model):
     quantity = db.Column(db.Integer, nullable=False)
     order_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
+    user = db.relationship('User', backref='orders')
+    event = db.relationship('Event', backref='orders')
+
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
