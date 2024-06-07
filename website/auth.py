@@ -32,3 +32,23 @@ def login():
         else:
             flash(error)
     return render_template('user.html', form=login_form, heading='Login')
+
+@auth_bp.route('/book_event/<int:event_id>', methods=['GET', 'POST'])
+@login_required
+def book_event(event_id):
+    event = Event.query.get_or_404(event_id)
+    form = TicketForm()
+    if form.validate_on_submit():
+        quantity = form.quantity.data
+        order = Order(user_id=current_user.id, event_id=event.id, quantity=quantity)
+        db.session.add(order)
+        db.session.commit()
+        flash('Booking successful! Your order ID is {}'.format(order.id))
+        return redirect(url_for('index'))
+    return render_template('book_event.html', event=event, form=form)
+
+@auth_bp.route('/booking_history')
+@login_required
+def booking_history():
+    orders = Order.query.filter_by(user_id=current_user.id).all()
+    return render_template('booking_history.html', orders=orders)
