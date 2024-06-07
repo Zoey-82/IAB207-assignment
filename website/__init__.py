@@ -9,7 +9,7 @@ db = SQLAlchemy()
 # create a function that creates a web application
 # a web server will run this web application
 def create_app():
-  
+   
     app = Flask(__name__)  # this is the name of the module/package that is calling this app
     # Should be set to false in a production environment
     app.debug = True
@@ -34,12 +34,15 @@ def create_app():
     from .models import User
     @login_manager.user_loader
     def load_user(user_id):
-       return db.session.scalar(db.select(User).where(User.id==user_id))
+        return db.session.scalar(db.select(User).where(User.id==user_id))
 
     from . import views
     app.register_blueprint(views.main_bp)
 
     from . import auth
     app.register_blueprint(auth.auth_bp)
+
+    from . import errors
+    app.register_blueprint(errors.errors_bp)
     
     return app
