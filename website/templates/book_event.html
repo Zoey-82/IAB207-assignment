@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Book Tickets for {{ event.title }}</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.quantity.label }}
+        {{ form.quantity(class="form-control") }}
+    </div>
+    <button type="submit" class="btn btn-primary">Book Tickets</button>
+</form>
+{% endblock %}
