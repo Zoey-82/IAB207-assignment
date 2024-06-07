@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h1 class="mt-5">500 - Internal Server Error</h1>
+    <p class="lead">Sorry, something went wrong on our end.</p>
+    <a href="{{ url_for('auth.index') }}" class="btn btn-primary">Go Home</a>
+</div>
+{% endblock %}
