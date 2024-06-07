@@ -119,7 +119,7 @@ def create_event():
         return redirect(url_for('auth.index'))
     return render_template('create_event.html', form=form)
 
-$ event updating 
+# event updating 
 @auth_bp.route('/update_event/<int:event_id>', methods=['GET', 'POST'])
 @login_required
 def update_event(event_id):
