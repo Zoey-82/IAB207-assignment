@@ -17,10 +17,12 @@ class RegisterForm(FlaskForm):
                   EqualTo('confirm', message="Passwords should match")])
     confirm = PasswordField("Confirm Password")
 
+     # submit button
+    submit = SubmitField("Register")
+    
     # ticket form 
     class TicketForm(FlaskForm):
     quantity = IntegerField('Quantity', validators=[InputRequired(), NumberRange(min=1)])
     submit = SubmitField('Book Tickets')
     
-    # submit button
-    submit = SubmitField("Register")
+
