@@ -33,6 +33,7 @@ def login():
             flash(error)
     return render_template('user.html', form=login_form, heading='Login')
 
+# event booking
 @auth_bp.route('/book_event/<int:event_id>', methods=['GET', 'POST'])
 @login_required
 def book_event(event_id):
@@ -47,12 +48,14 @@ def book_event(event_id):
         return redirect(url_for('index'))
     return render_template('book_event.html', event=event, form=form)
 
+# booking history 
 @auth_bp.route('/booking_history')
 @login_required
 def booking_history():
     orders = Order.query.filter_by(user_id=current_user.id).all()
     return render_template('booking_history.html', orders=orders)
 
+# event details 
 @auth_bp.route('/event/<int:event_id>', methods=['GET', 'POST'])
 def event_detail(event_id):
     event = Event.query.get_or_404(event_id)
@@ -66,12 +69,14 @@ def event_detail(event_id):
     comments = Comment.query.filter_by(event_id=event.id).all()
     return render_template('event_detail.html', event=event, form=form, comments=comments)
 
+# user logout 
 @auth_bp.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))
 
+# user register 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm()
@@ -88,3 +93,61 @@ def register():
         flash('Your account has been created! You are now able to log in', 'success')
         return redirect(url_for('auth.login'))
     return render_template('register.html', form=form)
+
+# event status 
+@auth_bp.route('/')
+def index():
+    events = Event.query.all()
+    return render_template('index1.html', events=events)
+    
+# event creation
+@auth_bp.route('/create_event', methods=['GET', 'POST'])
+@login_required
+def create_event():
+    form = EventForm()
+    if form.validate_on_submit():
+        event = Event(
+            title=form.title.data,
+            description=form.description.data,
+            date=form.date.data,
+            owner_id=current_user.id,
+            status='Open'
+        )
+        db.session.add(event)
+        db.session.commit()
+        flash('Event created successfully!')
+        return redirect(url_for('auth.index'))
+    return render_template('create_event.html', form=form)
+
+$ event updating 
+@auth_bp.route('/update_event/<int:event_id>', methods=['GET', 'POST'])
+@login_required
+def update_event(event_id):
+    event = Event.query.get_or_404(event_id)
+    if event.owner_id != current_user.id:
+        flash('You are not authorized to update this event.')
+        return redirect(url_for('auth.index'))
+
+    form = EventForm(obj=event)
+    if form.validate_on_submit():
+        event.title = form.title.data
+        event.description = form.description.data
+        event.date = form.date.data
+        db.session.commit()
+        flash('Event updated successfully!')
+        return redirect(url_for('auth.index'))
+    return render_template('update_event.html', form=form, event=event)
+
+# event cancel
+@auth_bp.route('/cancel_event/<int:event_id>', methods=['POST'])
+@login_required
+def cancel_event(event_id):
+    event = Event.query.get_or_404(event_id)
+    if event.owner_id != current_user.id:
+        flash('You are not authorized to cancel this event.')
+        return redirect(url_for('auth.index'))
+
+    event.status = 'Cancelled'
+    db.session.commit()
+    flash('Event cancelled successfully!')
+    return redirect(url_for('auth.index'))
