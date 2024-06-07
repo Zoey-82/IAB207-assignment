@@ -32,4 +32,10 @@ class TicketForm(FlaskForm):
 class CommentForm(FlaskForm):
     content = TextAreaField('Comment', validators=[InputRequired()])
     submit = SubmitField('Post Comment')
-    
+
+# event form
+class EventForm(FlaskForm):
+    title = StringField('Title', validators=[InputRequired()])
+    description = TextAreaField('Description', validators=[InputRequired()])
+    date = DateTimeField('Date', format='%Y-%m-%d %H:%M:%S', validators=[InputRequired()])
+    submit = SubmitField('Create Event')
